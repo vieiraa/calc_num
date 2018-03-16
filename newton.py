@@ -1,24 +1,25 @@
-from math import *
-from sympy import diff
+import math
 import numpy as np
 
-def derivative(f, x, h):
+def derivative(f, x, h=0.00001):
     d = (f(x+h)-f(x))/h
     return d
 
 def newton(f, x0, h):
     i = 0
-    lastX = x0
-    nextX = lastX + 10 * h
+    last_x = x0
+    next_x = x0
 
-    while (abs(lastX - nextX) > h):
-        newY = f(nextX)
-        lastX = nextX
-        nextX = lastX - newY / derivative(f, lastX, h)
+    while True:
+        last_x = next_x
+        next_x = last_x - f(last_x) / derivative(f, last_x, h)
         i += 1
-        print (i)
-                
-    return nextX
+        print("Iteração: ", i)
+        print("Valor: ", next_x)
+        if abs(last_x - next_x) < h:
+            break
+
+    return next_x
 
 def func(x):
     return np.exp(-x) - x
