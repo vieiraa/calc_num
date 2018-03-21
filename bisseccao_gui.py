@@ -1,8 +1,6 @@
+import re, inspect, math
+from math import *
 from tkinter import *
-import re
-import inspect
-import sympy as sp
-import numpy as np
 
 class App:
     def __init__(self, master=None):
@@ -68,19 +66,9 @@ class App:
 
 
 def bissecao(f,a,b,tol,N):        
-    # TODO identificar a variável usada na função 
-    #      Aqui, tentei assumir que apenas uma era usada (e.g. 'x'),
-    #      mas foi complicado generalizar quando há objeto numpy
-    #var = re.search('[a-zA-Z]+',f)
-    #var = var.group()
-
-    var = re.search(r'((\*|-)+[a-zA-Z](\*\*|/)?)', f)
-    #var = re.search(r'((\*|-|\()[a-zA-Z])', f)
-    var = var.group(0)
-    var = re.search(r'[a-zA-Z]', var)
-    var = var.group(0)
-    print(var)
-    string = ""
+    var = list(set(re.findall(r'[a-zA-Z]+', f)) - set(dir(math)))
+    var = var[0]
+    ret = ""
 
     # cria função anônima
     f = eval('lambda ' + var + ':' + f)
@@ -113,7 +101,8 @@ def bissecao(f,a,b,tol,N):
     while abs(a-b) > tol and ( not done or N != 0 ):
         # avalia a função no ponto médio
         fxm = f(xm)
-        #string += ("(i = {0:d}) f(xm)={1:f} | f(a)={2:f} | f(b)={3:f}".format(i,fxm,fa,fb))
+        #ret += ("(i = {0:d}) f(xm)={1:f} | f(a)={2:f} | f(b)={3:f}".format(i,fxm,fa,fb))
+        #ret += "\n"
         
         if fa*fxm < 0:       # Raiz esta à esquerda de xm
             b = xm
@@ -129,12 +118,12 @@ def bissecao(f,a,b,tol,N):
         N -= 1              # Atualiza passo
         i += 1              # Atualiza contador
 
-    string += ("Solução encontrada: {0}".format(xm))
-
-    return string
+    ret += ("Solução encontrada: {0}".format(xm))
+    
+    return ret
 
 GUI = Tk()
 App(GUI)
-GUI.title("Falsa posição")
+GUI.title("Bissecao")
 GUI.geometry("600x600")
 GUI.mainloop()
