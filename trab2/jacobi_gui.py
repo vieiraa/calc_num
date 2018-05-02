@@ -164,7 +164,7 @@ def jacobi(A,b,err, x=None, N = 25):
     for i in range(len(x)):
         res += "\nx[" + str(i) + "] = " + str(x[i])
         
-    return res + "\nErro = " + str(err)
+    return res + "\nErro = " + str(e)
 
 def converge_condition(A):
     D = diag(A)
@@ -177,7 +177,6 @@ def converge_condition(A):
         alpha[i] = (alpha[i]/A[i,i]) 
 
     maxAlpha = float(max(alpha))
-
     
     if(maxAlpha<1.0):
         return True

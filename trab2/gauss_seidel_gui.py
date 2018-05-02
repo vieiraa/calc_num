@@ -127,6 +127,7 @@ def result(a, b, err, res, num):
     r = gauss_seidel(A, B, er, num)
 
     res["text"] = "Resultado: " + r
+    res["text"] += "\nBeta max = " + str(abs(max_beta)) + ".\nCritério de Sassenfeld satisfeito"
     
 def gauss_seidel(A, b, error_s, num_eq):
     [m, n] = np.shape(A)
@@ -174,13 +175,13 @@ def sassenfeld(A):
             
             while True:
                 if j < i:
-                    sum1 += ((abs(A[i,j])*beta[j])/abs(A[i,i])-1)/m
+                    sum1 += ((abs(A[i,j])*beta[j])/abs(A[i,i]))/m
                     j = j +1
                 else: 
                     break
             while True:
                 if j <= m-1:
-                    sum2 += (abs(A[i,j])/abs(A[i,i])-1)/m
+                    sum2 += (abs(A[i,j])/abs(A[i,i]))/m
                     j = j +1
                 else:
                     break
