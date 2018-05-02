@@ -112,19 +112,23 @@ def result(a, b, err, res, num):
         
     er = float(err.get())
     A = np.mat(A[:len(A)-1])
+    max_beta = np.max(sassenfeld(A))
+    if max_beta < 1:
+        print("ok")
+    else:
+        print("not ok")
     B = np.mat(B[:len(B)-1])
 
     r = ""
-    try:
-        r = gauss_seidel(A, B, er, num)
-        res["text"] = "Resultado: " + r
-    except ValueError:
-        messagebox.showerror("Erro", "Critério das linhas não cumprido.")
-
-def gauss_seidel(A, b, error_s, num_eq):
+    
     if not converge_condition(A):
-        raise ValueError
+        messagebox.showwarning("Aviso", "Critério das linhas não cumprido.")
+    
+    r = gauss_seidel(A, B, er, num)
 
+    res["text"] = "Resultado: " + r
+    
+def gauss_seidel(A, b, error_s, num_eq):
     [m, n] = np.shape(A)
 
     U = np.triu(A, 1)
@@ -140,8 +144,10 @@ def gauss_seidel(A, b, error_s, num_eq):
         x_dif = []
         for i in range(num_eq):
             x_dif.append(abs(xn[i] - x[i]))
-            
-        err = abs(np.max(x_dif)/np.max(xn))
+        
+        x_dif_max = float(np.max(x_dif))
+        xn_max = float(np.max(xn))
+        err = abs(x_dif_max/xn_max)
         x = xn
         
         if err < error_s:
@@ -153,18 +159,53 @@ def gauss_seidel(A, b, error_s, num_eq):
         
     return res + "\nErro = " + str(err)
 
+def sassenfeld(A):
+    [m, n] = np.shape(A)
+    beta = np.ones((m,1))
+    alfa = np.ones((m,1))
+    i = 0
+    j = 0
+    aux = 0
+    
+    while True:
+        if i<=m-1:
+            sum1 = 0.0
+            sum2 = 0.0
+            
+            while True:
+                if j < i:
+                    sum1 += ((abs(A[i,j])*beta[j])/abs(A[i,i])-1)/m
+                    j = j +1
+                else: 
+                    break
+            while True:
+                if j <= m-1:
+                    sum2 += (abs(A[i,j])/abs(A[i,i])-1)/m
+                    j = j +1
+                else:
+                    break
+            
+            beta[i] = sum1 + sum2
+            aux= aux +1
+            i = i +1
+            j = 0
+        else:
+            break
+    
+    return beta
+
 def converge_condition(A):
     D = diag(A)
     R = A - diagflat(D)
-
-    alpha = zeros(len(A[0]))
+    alpha = zeros(len(A))
+    
     for i in range(len(A)):
-        for j in range(len(A[0])):
-            alpha[i] += R[i][j]
-        alpha[i] = (alpha[i]/A[i][i]) 
+        for j in range(len(A)):
+            alpha[i] += R[i,j]
+        alpha[i] = (alpha[i]/A[i,i]) 
 
     maxAlpha = float(max(alpha))
-
+    
     if(maxAlpha<1.0):
         return True
     

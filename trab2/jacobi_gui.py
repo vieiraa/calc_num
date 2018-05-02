@@ -128,17 +128,14 @@ def result(a, b, x, err, res, num):
     B = array(B)
     X = array(X)
 
-    r = ""
-    try:
-        r = jacobi(A, B, er, X)
-        res["text"] = "Resultado: " + r
-    except ValueError:
-        messagebox.showerror("Erro", "Critério das linhas não cumprido.")
-
-def jacobi(A,b,err, x=None, N = 25):
     if not converge_condition(A):
-        raise ValueError
-                                                                                                                                                           
+        messagebox.showwarning("Aviso", "Critério das linhas não cumprido.")
+    
+    r = jacobi(A, B, er, X)
+
+    res["text"] = "Resultado: " + r
+
+def jacobi(A,b,err, x=None, N = 25):                                                                                                                           
     if x is None:
         x = zeros(len(A[0]))
     
@@ -172,15 +169,16 @@ def jacobi(A,b,err, x=None, N = 25):
 def converge_condition(A):
     D = diag(A)
     R = A - diagflat(D)
-
-    alpha = zeros(len(A[0]))
+    alpha = zeros(len(A))
+    
     for i in range(len(A)):
-        for j in range(len(A[0])):
-            alpha[i] += R[i][j]
-        alpha[i] = (alpha[i]/A[i][i]) 
+        for j in range(len(A)):
+            alpha[i] += R[i,j]
+        alpha[i] = (alpha[i]/A[i,i]) 
 
     maxAlpha = float(max(alpha))
 
+    
     if(maxAlpha<1.0):
         return True
     
