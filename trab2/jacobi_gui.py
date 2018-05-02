@@ -105,7 +105,6 @@ def matrix_window(num):
     res.pack()
     
 def result(a, b, x, err, res, num):
-    print("ok")
     A = []
     B = []
     X = []

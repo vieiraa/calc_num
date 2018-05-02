@@ -73,7 +73,6 @@ def matrix_window(num):
     res.pack()
     
 def result(a, res, num):
-    print("ok")
     A = []
     
     for i in range(num):

@@ -95,7 +95,6 @@ def matrix_window(num):
     res.pack()
     
 def result(a, b, err, res, num):
-    print("ok")
     A = ""
     B = ""
     er = 0
@@ -123,6 +122,8 @@ def result(a, b, err, res, num):
         messagebox.showerror("Erro", "Critério das linhas não cumprido.")
 
 def gauss_seidel(A, b, error_s, num_eq):
+    if not converge_condition(A):
+        raise ValueError
 
     [m, n] = np.shape(A)
 
@@ -151,6 +152,23 @@ def gauss_seidel(A, b, error_s, num_eq):
         res += ('\nx[%0.0f] = %6.4f' % (i+1, x[i]))
         
     return res + "\nErro = " + str(err)
+
+def converge_condition(A):
+    D = diag(A)
+    R = A - diagflat(D)
+
+    alpha = zeros(len(A[0]))
+    for i in range(len(A)):
+        for j in range(len(A[0])):
+            alpha[i] += R[i][j]
+        alpha[i] = (alpha[i]/A[i][i]) 
+
+    maxAlpha = float(max(alpha))
+
+    if(maxAlpha<1.0):
+        return True
+    
+    return False
 
 GUI = Tk()
 GUI.title("Método de Gauss-Seidel")
